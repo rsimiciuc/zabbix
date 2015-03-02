@@ -172,55 +172,53 @@ $userFormList->addRow(_('URL (after login)'), new CTextBox('url', $this->data['u
 /*
  * Media tab
  */
-if (uint_in_array(CWebUser::$data['type'], array(USER_TYPE_ZABBIX_ADMIN, USER_TYPE_SUPER_ADMIN))) {
-	$userMediaFormList = new CFormList('userMediaFormList');
-	$userForm->addVar('user_medias', $this->data['user_medias']);
+$userMediaFormList = new CFormList('userMediaFormList');
+$userForm->addVar('user_medias', $this->data['user_medias']);
 
-	$mediaTableInfo = new CTableInfo(_('No media found.'));
+$mediaTableInfo = new CTableInfo(_('No media found.'));
 
-	foreach ($this->data['user_medias'] as $id => $media) {
-		if (!isset($media['active']) || !$media['active']) {
-			$status = new CLink(_('Enabled'), '#', 'enabled');
-			$status->onClick('return create_var("'.$userForm->getName().'","disable_media",'.$id.', true);');
-		}
-		else {
-			$status = new CLink(_('Disabled'), '#', 'disabled');
-			$status->onClick('return create_var("'.$userForm->getName().'","enable_media",'.$id.', true);');
-		}
+foreach ($this->data['user_medias'] as $id => $media) {
+        if (!isset($media['active']) || !$media['active']) {
+                $status = new CLink(_('Enabled'), '#', 'enabled');
+                $status->onClick('return create_var("'.$userForm->getName().'","disable_media",'.$id.', true);');
+        }
+        else {
+                $status = new CLink(_('Disabled'), '#', 'disabled');
+                $status->onClick('return create_var("'.$userForm->getName().'","enable_media",'.$id.', true);');
+        }
 
-		$mediaUrl = '?dstfrm='.$userForm->getName().
-						'&media='.$id.
-						'&mediatypeid='.$media['mediatypeid'].
-						'&sendto='.urlencode($media['sendto']).
-						'&period='.$media['period'].
-						'&severity='.$media['severity'].
-						'&active='.$media['active'];
+        $mediaUrl = '?dstfrm='.$userForm->getName().
+                                        '&media='.$id.
+                                        '&mediatypeid='.$media['mediatypeid'].
+                                        '&sendto='.urlencode($media['sendto']).
+                                        '&period='.$media['period'].
+                                        '&severity='.$media['severity'].
+                                        '&active='.$media['active'];
 
-		foreach (getSeverityCaption() as $key => $caption) {
-			$mediaActive = ($media['severity'] & (1 << $key));
+        foreach (getSeverityCaption() as $key => $caption) {
+                $mediaActive = ($media['severity'] & (1 << $key));
 
-			$mediaSeverity[$key] = new CSpan(mb_substr($caption, 0, 1), $mediaActive ? 'enabled' : null);
-			$mediaSeverity[$key]->setHint($caption.($mediaActive ? ' (on)' : ' (off)'));
-		}
+                $mediaSeverity[$key] = new CSpan(mb_substr($caption, 0, 1), $mediaActive ? 'enabled' : null);
+                $mediaSeverity[$key]->setHint($caption.($mediaActive ? ' (on)' : ' (off)'));
+        }
 
-		$mediaTableInfo->addRow(array(
-			new CCheckBox('user_medias_to_del['.$id.']', null, null, $id),
-			new CSpan($media['description'], 'nowrap'),
-			new CSpan($media['sendto'], 'nowrap'),
-			new CSpan($media['period'], 'nowrap'),
-			$mediaSeverity,
-			$status,
-			new CButton('edit_media', _('Edit'), 'return PopUp("popup_media.php'.$mediaUrl.'", 550, 400);', 'link_menu'))
-		);
-	}
-
-	$userMediaFormList->addRow(_('Media'), array($mediaTableInfo,
-		new CButton('add_media', _('Add'), 'return PopUp("popup_media.php?dstfrm='.$userForm->getName().'", 550, 400);', 'link_menu'),
-		SPACE,
-		SPACE,
-		(count($this->data['user_medias']) > 0) ? new CSubmit('del_user_media', _('Delete selected'), null, 'link_menu') : null
-	));
+        $mediaTableInfo->addRow(array(
+                new CCheckBox('user_medias_to_del['.$id.']', null, null, $id),
+                new CSpan($media['description'], 'nowrap'),
+                new CSpan($media['sendto'], 'nowrap'),
+                new CSpan($media['period'], 'nowrap'),
+                $mediaSeverity,
+                $status,
+                new CButton('edit_media', _('Edit'), 'return PopUp("popup_media.php'.$mediaUrl.'", 550, 400);', 'link_menu'))
+        );
 }
+
+$userMediaFormList->addRow(_('Media'), array($mediaTableInfo,
+        new CButton('add_media', _('Add'), 'return PopUp("popup_media.php?dstfrm='.$userForm->getName().'", 550, 400);', 'link_menu'),
+        SPACE,
+        SPACE,
+        (count($this->data['user_medias']) > 0) ? new CSubmit('del_user_media', _('Delete selected'), null, 'link_menu') : null
+));
 
 /*
  * Profile fields

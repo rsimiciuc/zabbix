@@ -153,12 +153,11 @@ elseif (hasRequest('update')) {
 
 		$result = API::User()->updateProfile($user);
 
-		if ($result && CwebUser::$data['type'] > USER_TYPE_ZABBIX_USER) {
-			$result = API::User()->updateMedia(array(
-				'users' => $user,
-				'medias' => $user['user_medias']
-			));
-		}
+		$data = array(
+			'users' => $user,
+			'medias' => $user['user_medias']
+		);
+		$result = API::User()->updateMedia($data);
 
 		$result = DBend($result);
 		if (!$result) {

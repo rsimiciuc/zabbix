@@ -604,9 +604,6 @@ class CUser extends CApiService {
 	 * @param string $data['medias']['period']
 	 */
 	protected function validateAddMedia(array $data) {
-		if (self::$userData['type'] < USER_TYPE_ZABBIX_ADMIN) {
-			self::exception(ZBX_API_ERROR_PARAMETERS, _('Only Zabbix Admins can add user media.'));
-		}
 
 		if (!isset($data['users']) || !isset($data['medias'])) {
 			self::exception(ZBX_API_ERROR_PARAMETERS, _('Invalid method parameters.'));
@@ -782,9 +779,6 @@ class CUser extends CApiService {
 	 * @param string $data['medias']['period']
 	 */
 	protected function validateUpdateMedia(array $data) {
-		if (self::$userData['type'] < USER_TYPE_ZABBIX_ADMIN) {
-			self::exception(ZBX_API_ERROR_PERMISSIONS, _('Only Zabbix Admins can change user media.'));
-		}
 
 		if (!isset($data['users']) || !isset($data['medias'])) {
 			self::exception(ZBX_API_ERROR_PARAMETERS, _('Invalid method parameters.'));
@@ -863,9 +857,6 @@ class CUser extends CApiService {
 	 * @throws APIException if the input is invalid
 	 */
 	protected function validateDeleteMedia(array $mediaIds) {
-		if (self::$userData['type'] < USER_TYPE_ZABBIX_ADMIN) {
-			self::exception(ZBX_API_ERROR_PARAMETERS, _('Only Zabbix Admins can remove user media.'));
-		}
 
 		$dbUserMediaCount = API::UserMedia()->get(array(
 			'countOutput' => true,
