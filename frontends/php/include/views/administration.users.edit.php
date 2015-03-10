@@ -54,7 +54,7 @@ if (!$data['is_profile']) {
 }
 
 // append user groups to form list
-if (!$this->data['is_profile']) {
+//if (!$this->data['is_profile']) {
 	$userForm->addVar('user_groups', $this->data['user_groups']);
 
 	$lstGroups = new CListBox('user_groups_to_del[]', null, 10);
@@ -74,7 +74,7 @@ if (!$this->data['is_profile']) {
 				: null
 		)
 	);
-}
+//}
 
 // append password to form list
 if ($data['auth_type'] == ZBX_AUTH_INTERNAL) {

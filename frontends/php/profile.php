@@ -59,6 +59,12 @@ $fields = array(
 	'enable_media' =>		array(T_ZBX_INT, O_OPT, null, null, null),
 	'disable_media' =>		array(T_ZBX_INT, O_OPT, null, null, null),
 	'messages' =>			array(T_ZBX_STR, O_OPT, null, null, null),
+        'user_groups' =>		array(T_ZBX_STR, O_OPT, null,	NOT_EMPTY,	null),
+	'user_groups_to_del' =>	array(T_ZBX_INT, O_OPT, null,	DB_ID,		null),
+        'del_user_group' =>		array(T_ZBX_STR, O_OPT, P_SYS|P_ACT,	null,	null),
+        'new_groups' =>			array(T_ZBX_STR, O_OPT, null,	null,		null),
+        'del_group_user' =>		array(T_ZBX_STR, O_OPT, P_SYS|P_ACT,	null,	null),
+        'delete_selected' =>	array(T_ZBX_STR, O_OPT, P_SYS|P_ACT,	null,	null),
 	// actions
 	'update'=>				array(T_ZBX_STR, O_OPT, P_SYS|P_ACT, null, null),
 	'cancel'=>				array(T_ZBX_STR, O_OPT, P_SYS, null, null),
@@ -70,6 +76,9 @@ $fields = array(
 check_fields($fields);
 
 $_REQUEST['autologin'] = getRequest('autologin', 0);
+
+$_REQUEST['filter_usrgrpid'] = getRequest('filter_usrgrpid', CProfile::get('web.users.filter.usrgrpid', 0));
+CProfile::update('web.users.filter.usrgrpid', $_REQUEST['filter_usrgrpid'], PROFILE_TYPE_ID);
 
 // secondary actions
 if (isset($_REQUEST['new_media'])) {
@@ -94,6 +103,19 @@ elseif (isset($_REQUEST['del_user_media'])) {
 		}
 	}
 }
+elseif (isset($_REQUEST['new_groups'])) {
+	$_REQUEST['new_groups'] = getRequest('new_groups', array());
+	$_REQUEST['user_groups'] = getRequest('user_groups', array());
+	$_REQUEST['user_groups'] += $_REQUEST['new_groups'];
+	unset($_REQUEST['new_groups']);
+}
+elseif (isset($_REQUEST['del_user_group'])) {
+	foreach (getRequest('user_groups_to_del', array()) as $groupId) {
+		if (isset($_REQUEST['user_groups'][$groupId])) {
+			unset($_REQUEST['user_groups'][$groupId]);
+		}
+	}
+}
 // primary actions
 elseif (isset($_REQUEST['cancel'])) {
 	ob_end_clean();
@@ -102,7 +124,9 @@ elseif (isset($_REQUEST['cancel'])) {
 elseif (hasRequest('update')) {
 	$auth_type = getUserAuthenticationType(CWebUser::$data['userid']);
 
-	if ($auth_type != ZBX_AUTH_INTERNAL) {
+        $usrgrps = getRequest('user_groups', array());
+
+        if ($auth_type != ZBX_AUTH_INTERNAL) {
 		$_REQUEST['password1'] = $_REQUEST['password2'] = null;
 	}
 	else {
@@ -132,6 +156,7 @@ elseif (hasRequest('update')) {
 		$user['rows_per_page'] = getRequest('rows_per_page');
 		$user['user_groups'] = null;
 		$user['user_medias'] = getRequest('user_medias', array());
+                $user['usrgrps'] = zbx_toObject($usrgrps, 'usrgrpid');
 
 		if (hasRequest('lang')) {
 			$user['lang'] = getRequest('lang');

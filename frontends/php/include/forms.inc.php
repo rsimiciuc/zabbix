@@ -137,7 +137,7 @@ function getUserFormData($userid, $isProfile = false) {
 	}
 
 	// set user rights
-	if (!$data['is_profile']) {
+	//if (!$data['is_profile']) {
 		$data['groups'] = API::UserGroup()->get(array(
 			'usrgrpids' => $data['user_groups'],
 			'output' => array('usrgrpid', 'name')
@@ -167,7 +167,7 @@ function getUserFormData($userid, $isProfile = false) {
 		foreach ($tmp_permitions as $id => $permition) {
 			array_push($data['user_rights'], array('id' => $id, 'permission' => $permition));
 		}
-	}
+	//}
 	return $data;
 }
 
