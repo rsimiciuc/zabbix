@@ -92,7 +92,12 @@ $ZBX_MENU = array(
 			),
 			array(
 				'url' => 'jsrpc.php'
-			)
+			),
+                        array(
+				'url' => 'usergrps.php',
+				'label' => _('Users'),
+				'sub_pages' => array('users.php', 'popup_usrgrp.php')
+			),
 		)
 	),
 	'cm' => array(

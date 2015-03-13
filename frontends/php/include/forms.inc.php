@@ -51,7 +51,8 @@ function getUserFormData($userid, $isProfile = false) {
 			'userids' => $userid,
 			'output' => array('usrgrpid')
 		));
-		$userGroup = zbx_objectValues($userGroups, 'usrgrpid');
+
+                $userGroup = zbx_objectValues($userGroups, 'usrgrpid');
 		$data['user_groups']	= zbx_toHash($userGroup);
 
 		$data['user_medias'] = array();
@@ -142,7 +143,7 @@ function getUserFormData($userid, $isProfile = false) {
 			'usrgrpids' => $data['user_groups'],
 			'output' => array('usrgrpid', 'name')
 		));
-		order_result($data['groups'], 'name');
+                order_result($data['groups'], 'name');
 
 		$group_ids = array_values($data['user_groups']);
 		if (count($group_ids) == 0) {
